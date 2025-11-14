@@ -7,11 +7,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { email, verificationToken } = req.body;
+  const { email, verificationCode } = req.body;
 
-  // Validate request
-  if (!email || !verificationToken) {
-    return res.status(400).json({ message: 'Email and verificationToken are required' });
+  // Validate request - support both old token format and new code format
+  const code = verificationCode || req.body.verificationToken;
+  if (!email || !code) {
+    return res.status(400).json({ message: 'Email and verification code are required' });
   }
 
   // Validate API key (optional, for security)
@@ -29,17 +30,25 @@ export default async function handler(req, res) {
     },
   });
 
-  const verificationUrl = `https://handoff-backend.onrender.com/verify/${verificationToken}`;
-
   const mailOptions = {
     from: `"HandOff Team" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: 'Verify your HandOff account',
+    subject: 'Your HandOff Account Verification Code',
     html: `
-      <p>Hello,</p>
-      <p>Please verify your email by clicking the link below:</p>
-      <a href="${verificationUrl}">Verify Email</a>
-      <p>Thank you,<br>HandOff Team</p>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #1e40af;">Email Verification Code</h2>
+        <p>Hello,</p>
+        <p>Thank you for registering with HandOff! Enter this 6-digit code in the app to verify your email address:</p>
+        
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 30px 0; text-align: center; border: 2px solid #1e40af;">
+          <p style="margin: 0; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Your Verification Code</p>
+          <p style="margin: 10px 0 0 0; font-size: 32px; font-weight: bold; color: #1e40af; letter-spacing: 8px; font-family: monospace;">${code}</p>
+        </div>
+        
+        <p style="color: #ef4444; font-size: 14px; margin-top: 20px;"><strong>⚠️ This code will expire in 10 minutes.</strong></p>
+        <p style="color: #6b7280; font-size: 14px;">If you didn't create an account, please ignore this email.</p>
+        <p style="margin-top: 30px;">Thank you,<br>HandOff Team</p>
+      </div>
     `,
   };
 
