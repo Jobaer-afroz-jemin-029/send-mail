@@ -29,32 +29,23 @@ export default async function handler(req, res) {
     },
   });
 
-  const resetUrl = `https://handoff-backend.onrender.com/reset-password?token=${resetToken}`;
-
   const mailOptions = {
     from: `"HandOff Team" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: 'Reset your HandOff password',
+    subject: 'Your HandOff Password Reset Code',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #1e40af;">Password Reset Request</h2>
+        <h2 style="color: #1e40af;">Password Reset Code</h2>
         <p>Hello,</p>
-        <p>You requested to reset your password. Use the reset code below or click the link:</p>
+        <p>You requested to reset your password. Enter this 6-digit code in the app:</p>
         
-        <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
-          <p style="margin: 0; font-size: 12px; color: #6b7280;">Reset Code:</p>
-          <p style="margin: 5px 0 0 0; font-size: 20px; font-weight: bold; color: #1e40af; letter-spacing: 2px; font-family: monospace;">${resetToken}</p>
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 30px 0; text-align: center; border: 2px solid #1e40af;">
+          <p style="margin: 0; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Your Security Code</p>
+          <p style="margin: 10px 0 0 0; font-size: 32px; font-weight: bold; color: #1e40af; letter-spacing: 8px; font-family: monospace;">${resetToken}</p>
         </div>
         
-        <p style="margin: 20px 0;">
-          <a href="${resetUrl}" style="background-color: #1e40af; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Reset Password</a>
-        </p>
-        
-        <p style="color: #6b7280; font-size: 14px;">Or copy and paste this link into your browser:</p>
-        <p style="color: #6b7280; word-break: break-all; font-size: 12px; background-color: #f9fafb; padding: 10px; border-radius: 4px;">${resetUrl}</p>
-        
-        <p style="color: #ef4444; font-size: 14px; margin-top: 20px;"><strong>⚠️ This code will expire in 1 hour.</strong></p>
-        <p style="color: #6b7280; font-size: 14px;">If you didn't request this, please ignore this email.</p>
+        <p style="color: #ef4444; font-size: 14px; margin-top: 20px;"><strong>⚠️ This code will expire in 10 minutes.</strong></p>
+        <p style="color: #6b7280; font-size: 14px;">If you didn't request this, please ignore this email and your password will remain unchanged.</p>
         <p style="margin-top: 30px;">Thank you,<br>HandOff Team</p>
       </div>
     `,
